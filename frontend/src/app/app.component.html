@@ -1,0 +1,84 @@
+<div class="page">
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <div class="brand">
+        <span class="brand-icon" aria-hidden="true">🐾</span>
+        <div>
+          <span class="brand-title">毛孩找家</span>
+          <span class="brand-subtitle">動物領養平台</span>
+        </div>
+      </div>
+
+      <div
+        class="status-pill"
+        [class.status-ok]="healthStatus() === 'ok'"
+        [class.status-error]="healthStatus() === 'error'"
+      >
+        <span class="status-dot"></span>
+        <span>{{ databaseStatus() }}</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container main-content">
+    <section class="hero">
+      <span class="hero-tag">以領養代替購買</span>
+      <h1>為每一隻等待中的毛孩，找到溫暖的家</h1>
+      <p>
+        這是動物領養平台的系統初始首頁（Angular + Node.js + PostgreSQL + Docker）。
+        下方資料即時從後端 API 與 PostgreSQL 資料庫讀取。
+      </p>
+      <button type="button" class="refresh-btn" (click)="loadPlatformData()">
+        重新整理資料
+      </button>
+    </section>
+
+    <section class="animals-section">
+      <div class="section-header">
+        <h2>待領養毛孩</h2>
+        <span class="count-badge" *ngIf="!loading() && !errorMessage()">
+          共 {{ animals().length }} 位夥伴
+        </span>
+      </div>
+
+      <div class="state-box" *ngIf="loading()">
+        正在從後端載入毛孩資料...
+      </div>
+
+      <div class="state-box state-error" *ngIf="!loading() && errorMessage()">
+        {{ errorMessage() }}
+      </div>
+
+      <div
+        class="animals-grid"
+        *ngIf="!loading() && !errorMessage() && animals().length > 0"
+      >
+        <article class="animal-card" *ngFor="let animal of animals()">
+          <div class="card-top">
+            <span class="species-emoji" aria-hidden="true">
+              {{ getSpeciesEmoji(animal.species) }}
+            </span>
+            <span class="adoption-badge">
+              {{ animal.status === 'available' ? '開放領養' : animal.status }}
+            </span>
+          </div>
+
+          <h3>{{ animal.name }}</h3>
+          <p class="animal-meta">
+            {{ animal.species }} · {{ animal.breed }}
+          </p>
+          <p class="animal-details">
+            年齡：{{ animal.age }} ｜ 性別：{{ animal.gender }}
+          </p>
+          <p class="animal-desc">{{ animal.description }}</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      毛孩找家 Animal Adoption Platform · Angular / Node.js / PostgreSQL / Docker
+    </div>
+  </footer>
+</div>
